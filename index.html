@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PG指名フローチャート TGOO</title>
+<style>
+body { font-family: sans-serif; text-align: center; padding: 20px; }
+button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+.hidden { display: none; }
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+let step = 1;
+
+const results = {
+  A: {
+    title: "ライブ感・温度感重視",
+    members: [
+      { name: "hassy", url: "https://doc.la-viephoto.com/shop/tgoo/pg/hassy.html", charge: "+55,000(税込+60,500)" },
+      { name: "Kenji", url: "https://doc.la-viephoto.com/shop/tgoo/pg/kenji.html" },
+      { name: "zaki", url: "https://doc.la-viephoto.com/shop/tgoo/pg/zaki.html" },
+      { name: "HAYATO", url: "https://doc.la-viephoto.com/shop/tgoo/pg/hayato.html" }
+    ]
+  },
+  B: {
+    title: "ナチュラル・自然体",
+    members: [
+      { name: "TSUBAI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/tsubai.html", charge: "+55,000(税込+60,500)" },
+      { name: "mana", url: "https://doc.la-viephoto.com/shop/tgoo/pg/mana.html" },
+      { name: "ATSUSHI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/atsushi.html" },
+      { name: "Katsuo", url: "https://doc.la-viephoto.com/shop/tgoo/pg/katsuo.html" }
+    ]
+  },
+  C: {
+    title: "ドラマチック・非日常感",
+    members: [
+      { name: "TAIHEI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/taihei.html", charge: "+55,000(税込+60,500)" },
+      { name: "Naoya", url: "https://doc.la-viephoto.com/shop/tgoo/pg/naoya.html" },
+      { name: "coge", url: "https://doc.la-viephoto.com/shop/tgoo/pg/coge.html" },
+      { name: "kaneda", url: "https://doc.la-viephoto.com/shop/tgoo/pg/kaneda.html" }
+    ]
+  },
+  D: {
+    title: "寄り添う安心感",
+    members: [
+      { name: "Tommy", url: "https://doc.la-viephoto.com/shop/tgoo/pg/tommy.html" },
+      { name: "Imani", url: "https://doc.la-viephoto.com/shop/tgoo/pg/imani.html" },
+      { name: "chifuyu", url: "https://doc.la-viephoto.com/shop/tgoo/pg/chifuyu.html" },
+      { name: "DOIKE", url: "https://doc.la-viephoto.com/shop/tgoo/pg/doike.html" }
+    ]
+  }
+};
+
+function renderQuestion(text, nextA, nextB) {
+  document.getElementById("app").innerHTML = `
+    <h2>${text}</h2>
+    <button onclick="go('${nextA}')">A</button>
+    <button onclick="go('${nextB}')">B</button>
+  `;
+}
+
+function renderResult(type) {
+  const result = results[type];
+  const container = document.getElementById("app");
+  container.innerHTML = `<h2>${result.title}</h2>`;
+
+  result.members.forEach(member => {
+    const div = document.createElement("div");
+
+    const link = document.createElement("a");
+    link.href = member.url;
+    link.textContent = member.name;
+    link.target = "_blank";
+
+    div.appendChild(link);
+
+    if (member.charge) {
+      const charge = document.createElement("span");
+      charge.textContent = " " + member.charge;
+      div.appendChild(charge);
+    }
+
+    container.appendChild(div);
+  });
+
+  const back = document.createElement("button");
+  back.textContent = "↺ 質問の最初に戻る";
+  back.onclick = () => location.reload();
+  container.appendChild(back);
+}
+
+function go(next) {
+  if (next === "Q2") {
+    renderQuestion("結婚式で大切なポイントは？", "Q4", "Q4");
+  } else if (next === "Q3") {
+    renderQuestion("どんなフォトグラファーと過ごしたい？", "Q5", "Q5");
+  } else if (next === "Q4") {
+    renderQuestion("写真の雰囲気の好みは？", "A", "B");
+  } else if (next === "Q5") {
+    renderQuestion("写真の仕上がりの好みは？", "C", "D");
+  } else {
+    renderResult(next);
+  }
+}
+
+// 初期表示
+renderQuestion("写真を見返した時、大切にしたいのは？", "Q2", "Q3");
+</script>
+
+</body>
+</html>
