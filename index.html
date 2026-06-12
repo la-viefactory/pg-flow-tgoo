@@ -1,117 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PG指名フローチャート TGOO</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PG指名フローチャート（TGOO）</title>
+
 <style>
-body { font-family: sans-serif; text-align: center; padding: 20px; }
-button { margin: 10px; padding: 10px 20px; font-size: 16px; }
-.hidden { display: none; }
+body {
+  font-family: system-ui, -apple-system,
+    "Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo", sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #222;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; }
+h1 { font-size: 22px; margin-bottom: 6px; }
+.sub { font-size: 14px; color:#666; margin-bottom: 16px; }
+.card { border: 1px solid #ddd; border-radius: 10px; padding: 20px; }
+.hidden { display:none; }
+.question { font-size: 18px; margin-bottom: 16px; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.choice { padding: 14px; border-radius: 10px; border: 1px solid #ccc; background: #fafafa; cursor: pointer; }
+
+.result-title { font-size: 20px; margin-bottom: 6px; }
+.result-sub { font-size: 14px; color:#666; margin-bottom: 12px; }
+.recommend { margin: 12px 0 16px; }
+
+.recommend-toggle {
+  background:none; border:none; font-size:14px; color:#555; cursor:pointer;
+}
+.recommend-body { font-size:14px; line-height:1.7; margin-top:8px; }
+
+.pg-list { display:grid; gap:12px; }
+.pg { border:1px solid #ddd; border-radius:10px; padding:14px; }
+
+.pg-name { font-weight:bold; margin-bottom:6px; }
+.pg-name a { color:#222; text-decoration: underline; }
+
+.tags { font-size:13px; color:#666; }
+.tags span { margin-right:6px; pointer-events: none; }
+
+.back-top { margin-top:20px; text-align:center; }
+.restart-btn { background:none; border:none; font-size:14px; color:#555; cursor:pointer; }
+
+footer { margin-top:32px; font-size:12px; color:#777; text-align:center; }
 </style>
 </head>
 
 <body>
+<div class="wrap">
+<h1>PG指名フローチャート（TGOO）</h1>
+<div class="sub">5つの質問で、あなたに合うPGをご提案します</div>
 
-<div id="app"></div>
+<div id="card" class="card"></div>
+<div id="result" class="hidden"></div>
+
+<footer>
+※最終の結果画面から公式サイトの作品ページへ遷移します
+</footer>
+</div>
 
 <script>
-let step = 1;
 
+const card = document.getElementById("card");
+const result = document.getElementById("result");
+
+/* ===== TGOO結果データ ===== */
 const results = {
-  A: {
-    title: "ライブ感・温度感重視",
-    members: [
-      { name: "hassy", url: "https://doc.la-viephoto.com/shop/tgoo/pg/hassy.html", charge: "+55,000(税込+60,500)" },
-      { name: "Kenji", url: "https://doc.la-viephoto.com/shop/tgoo/pg/kenji.html" },
-      { name: "zaki", url: "https://doc.la-viephoto.com/shop/tgoo/pg/zaki.html" },
-      { name: "HAYATO", url: "https://doc.la-viephoto.com/shop/tgoo/pg/hayato.html" }
-    ]
-  },
-  B: {
-    title: "ナチュラル・自然体",
-    members: [
-      { name: "TSUBAI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/tsubai.html", charge: "+55,000(税込+60,500)" },
-      { name: "mana", url: "https://doc.la-viephoto.com/shop/tgoo/pg/mana.html" },
-      { name: "ATSUSHI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/atsushi.html" },
-      { name: "Katsuo", url: "https://doc.la-viephoto.com/shop/tgoo/pg/katsuo.html" }
-    ]
-  },
-  C: {
-    title: "ドラマチック・非日常感",
-    members: [
-      { name: "TAIHEI", url: "https://doc.la-viephoto.com/shop/tgoo/pg/taihei.html", charge: "+55,000(税込+60,500)" },
-      { name: "Naoya", url: "https://doc.la-viephoto.com/shop/tgoo/pg/naoya.html" },
-      { name: "coge", url: "https://doc.la-viephoto.com/shop/tgoo/pg/coge.html" },
-      { name: "kaneda", url: "https://doc.la-viephoto.com/shop/tgoo/pg/kaneda.html" }
-    ]
-  },
-  D: {
-    title: "寄り添う安心感",
-    members: [
-      { name: "Tommy", url: "https://doc.la-viephoto.com/shop/tgoo/pg/tommy.html" },
-      { name: "Imani", url: "https://doc.la-viephoto.com/shop/tgoo/pg/imani.html" },
-      { name: "chifuyu", url: "https://doc.la-viephoto.com/shop/tgoo/pg/chifuyu.html" },
-      { name: "DOIKE", url: "https://doc.la-viephoto.com/shop/tgoo/pg/doike.html" }
-    ]
-  }
+
+A:{
+  title:"ライブ感・温度感重視",
+  sub:"笑顔と空気感を大切に、一緒に場を楽しむPGタイプ",
+  recommend:"みんなとの時間が何より大事な方へ。",
+  photographers:[
+    {name:"hassy", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hassy.html", tags:["#アーティスティック","#モード","#フレンドリー","#ハートフル"]},
+    {name:"Kenji", url:"https://doc.la-viephoto.com/shop/tgoo/pg/kenji.html", tags:["#ハッピー","#ドキュメンタリー","#フレンドリー","#アットホーム"]},
+    {name:"zaki", url:"https://doc.la-viephoto.com/shop/tgoo/pg/zaki.html", tags:["#しっとり","#フレンドリー","#大人っぽさ","#アットホーム"]},
+    {name:"HAYATO", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hayato.html", tags:["#ハートフル","#おしゃれ","#ハッピー","#エモーショナル"]}
+  ]
+},
+
+B:{
+  title:"ナチュラル・自然体",
+  sub:"無理せず、いつもの自分たちで過ごせるPGタイプ",
+  recommend:"リラックスして撮影したい方へ。",
+  photographers:[
+    {name:"TSUBAI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/tsubai.html", tags:["#自然体","#いつものふたり","#笑顔","#安心感"]},
+    {name:"mana", url:"https://doc.la-viephoto.com/shop/tgoo/pg/mana.html", tags:["#王道","#ナチュラル","#ポージング","#フレンドリー"]},
+    {name:"ATSUSHI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/atsushi.html", tags:["#温かさ","#空気感","#ふたりらしさ","#寄り添う"]},
+    {name:"Katsuo", url:"https://doc.la-viephoto.com/shop/tgoo/pg/katsuo.html", tags:["#フレンドリー","#ポージング","#シャープ","#鮮やかさ"]}
+  ]
+},
+
+C:{
+  title:"ドラマチック・非日常感",
+  sub:"特別な一日を“作品”として残したいあなたへ",
+  recommend:"世界観や演出を楽しみたい方へ。",
+  photographers:[
+    {name:"TAIHEI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/taihei.html", tags:["#エモーショナル","#おしゃれ","#空気感","#しっとり"]},
+    {name:"Naoya", url:"https://doc.la-viephoto.com/shop/tgoo/pg/naoya.html", tags:["#モード","#シック","#大人っぽい","#非日常"]},
+    {name:"coge", url:"https://doc.la-viephoto.com/shop/tgoo/pg/coge.html", tags:["#大人っぽい","#しっとり","#美しさ","#フレンドリー"]},
+    {name:"kaneda", url:"https://doc.la-viephoto.com/shop/tgoo/pg/kaneda.html", tags:["#きれいめ","#ポージング","#繊細な光","#親しみやすさ"]}
+  ]
+},
+
+D:{
+  title:"寄り添う安心感",
+  sub:"穏やかに過ごしたいあなたへ",
+  recommend:"丁寧に寄り添ってほしい方へ。",
+  photographers:[
+    {name:"Tommy", url:"https://doc.la-viephoto.com/shop/tgoo/pg/tommy.html", tags:["#穏やか","#ポージング","#透明感","#安心感"]},
+    {name:"Imani", url:"https://doc.la-viephoto.com/shop/tgoo/pg/imani.html", tags:["#やわらかさ","#あたたかさ","#ふんわり","#穏やか"]},
+    {name:"chifuyu", url:"https://doc.la-viephoto.com/shop/tgoo/pg/chifuyu.html", tags:["#穏やか","#ポージング","#透明感","#安心感"]},
+    {name:"DOIKE", url:"https://doc.la-viephoto.com/shop/tgoo/pg/doike.html", tags:["#やわらかさ","#あたたかさ","#ふんわり","#穏やか"]}
+  ]
+}
+
 };
 
-function renderQuestion(text, nextA, nextB) {
-  document.getElementById("app").innerHTML = `
-    <h2>${text}</h2>
-    <button onclick="go('${nextA}')">A</button>
-    <button onclick="go('${nextB}')">B</button>
+/* ===== 以下は京都そのまま ===== */
+
+function showQuestion(text,aText,bText,onA,onB,showBack){
+  card.classList.remove("hidden");
+  result.classList.add("hidden");
+  card.innerHTML = `
+    <div class="question">${text}</div>
+    <div class="choices">
+      <button class="choice" id="btnA">${aText}</button>
+      <button class="choice" id="btnB">${bText}</button>
+    </div>
+    ${showBack ? `<div class="back-top"><button class="restart-btn">↺ 質問の最初に戻る</button></div>` : ``}
   `;
+  document.getElementById("btnA").onclick = onA;
+  document.getElementById("btnB").onclick = onB;
+  if (showBack) card.querySelector(".restart-btn").onclick = q1;
 }
 
-function renderResult(type) {
-  const result = results[type];
-  const container = document.getElementById("app");
-  container.innerHTML = `<h2>${result.title}</h2>`;
+function showResult(key){
+  card.classList.add("hidden");
+  const r = results[key];
+  result.innerHTML = `
+    <div class="card">
+      <div class="result-title">${r.title}</div>
+      <div class="result-sub">${r.sub}</div>
+      <div class="recommend">
+        <button class="recommend-toggle">▷ こんなあなたにおすすめ（←ここをタップ）</button>
+        <div class="recommend-body hidden">${r.recommend}</div>
+      </div>
+      <div class="pg-list"></div>
+      <div class="back-top">
+        <button class="restart-btn">↺ 質問の最初に戻る</button>
+      </div>
+    </div>
+  `;
+  result.classList.remove("hidden");
 
-  result.members.forEach(member => {
-    const div = document.createElement("div");
+  const list = result.querySelector(".pg-list");
+
+  r.photographers.forEach(p=>{
+    const pg = document.createElement("div");
+    pg.className = "pg";
+
+    const name = document.createElement("div");
+    name.className = "pg-name";
 
     const link = document.createElement("a");
-    link.href = member.url;
-    link.textContent = member.name;
+    link.href = p.url;
     link.target = "_blank";
+    link.textContent = p.name;
 
-    div.appendChild(link);
+    name.appendChild(link);
 
-    if (member.charge) {
-      const charge = document.createElement("span");
-      charge.textContent = " " + member.charge;
-      div.appendChild(charge);
-    }
+    const tags = document.createElement("div");
+    tags.className = "tags";
 
-    container.appendChild(div);
+    p.tags.forEach(t=>{
+      const span = document.createElement("span");
+      span.textContent = t;
+      tags.appendChild(span);
+    });
+
+    pg.appendChild(name);
+    pg.appendChild(tags);
+    list.appendChild(pg);
   });
 
-  const back = document.createElement("button");
-  back.textContent = "↺ 質問の最初に戻る";
-  back.onclick = () => location.reload();
-  container.appendChild(back);
+  const toggle = result.querySelector(".recommend-toggle");
+  toggle.onclick = ()=>{
+    const body = result.querySelector(".recommend-body");
+    body.classList.toggle("hidden");
+    toggle.textContent =
+      body.classList.contains("hidden")
+      ? "▷ こんなあなたにおすすめ（←ここをタップ）"
+      : "▼ こんなあなたにおすすめ（←閉じる）";
+  };
+
+  result.querySelector(".restart-btn").onclick = q1;
 }
 
-function go(next) {
-  if (next === "Q2") {
-    renderQuestion("結婚式で大切なポイントは？", "Q4", "Q4");
-  } else if (next === "Q3") {
-    renderQuestion("どんなフォトグラファーと過ごしたい？", "Q5", "Q5");
-  } else if (next === "Q4") {
-    renderQuestion("写真の雰囲気の好みは？", "A", "B");
-  } else if (next === "Q5") {
-    renderQuestion("写真の仕上がりの好みは？", "C", "D");
-  } else {
-    renderResult(next);
-  }
+function q1(){
+  showQuestion("写真を見返した時、大切にしたいのは？",
+    "感情／温かさ／物語",
+    "おしゃれ／世界観／美しさ",
+    q2,q3,false);
 }
 
-// 初期表示
-renderQuestion("写真を見返した時、大切にしたいのは？", "Q2", "Q3");
+function q2(){
+  showQuestion("結婚式で大切なポイントは？",
+    "ゲストとの時間や空気感",
+    "ありのまま、自然体なふたりらしさ",
+    q4,q4,true);
+}
+
+function q3(){
+  showQuestion("どんなフォトグラファーと過ごしたい？",
+    "独自の世界観でふたりを導いてくれる",
+    "落ち着いた、寄り添ってくれる",
+    q5,q5,true);
+}
+
+function q4(){
+  showQuestion("写真の雰囲気の好みは？",
+    "にぎやか・笑顔・ドキュメンタリー",
+    "やわらかさ・自然・空気感",
+    ()=>showResult("A"),
+    ()=>showResult("B"),
+    true);
+}
+
+function q5(){
+  showQuestion("写真の仕上がりの好みは？",
+    "ドラマチック・印象的",
+    "シンプル・上品・落ち着いた",
+    ()=>showResult("C"),
+    ()=>showResult("D"),
+    true);
+}
+
+window.onload = q1;
+
 </script>
-
 </body>
 </html>
