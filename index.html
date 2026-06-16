@@ -65,7 +65,7 @@ footer { margin-top:32px; font-size:12px; color:#777; text-align:center; }
 const card = document.getElementById("card");
 const result = document.getElementById("result");
 
-/* ===== TGOO結果データ ===== */
+/* ===== TGOO結果データ（順番修正済み） ===== */
 const results = {
 
 A:{
@@ -73,10 +73,10 @@ A:{
   sub:"笑顔と空気感を大切に、一緒に場を楽しむPGタイプ",
   recommend:"みんなとの時間が何より大事な方へ。",
   photographers:[
-    {name:"hassy", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hassy.html", tags:["#アーティスティック","#モード","#フレンドリー","#ハートフル"]},
+    {name:"HAYATO", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hayato.html", tags:["#ハートフル","#おしゃれ","#ハッピー","#エモーショナル"]},
     {name:"Kenji", url:"https://doc.la-viephoto.com/shop/tgoo/pg/kenji.html", tags:["#ハッピー","#ドキュメンタリー","#フレンドリー","#アットホーム"]},
     {name:"zaki", url:"https://doc.la-viephoto.com/shop/tgoo/pg/zaki.html", tags:["#しっとり","#フレンドリー","#大人っぽさ","#アットホーム"]},
-    {name:"HAYATO", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hayato.html", tags:["#ハートフル","#おしゃれ","#ハッピー","#エモーショナル"]}
+    {name:"hassy", url:"https://doc.la-viephoto.com/shop/tgoo/pg/hassy.html", tags:["#アーティスティック","#モード","#フレンドリー","#ハートフル"]}
   ]
 },
 
@@ -85,10 +85,10 @@ B:{
   sub:"無理せず、いつもの自分たちで過ごせるPGタイプ",
   recommend:"リラックスして撮影したい方へ。",
   photographers:[
-    {name:"TSUBAI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/tsubai.html", tags:["#自然体","#いつものふたり","#笑顔","#安心感"]},
-    {name:"mana", url:"https://doc.la-viephoto.com/shop/tgoo/pg/mana.html", tags:["#王道","#ナチュラル","#ポージング","#フレンドリー"]},
     {name:"ATSUSHI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/atsushi.html", tags:["#温かさ","#空気感","#ふたりらしさ","#寄り添う"]},
-    {name:"Katsuo", url:"https://doc.la-viephoto.com/shop/tgoo/pg/katsuo.html", tags:["#フレンドリー","#ポージング","#シャープ","#鮮やかさ"]}
+    {name:"mana", url:"https://doc.la-viephoto.com/shop/tgoo/pg/mana.html", tags:["#王道","#ナチュラル","#ポージング","#フレンドリー"]},
+    {name:"Katsuo", url:"https://doc.la-viephoto.com/shop/tgoo/pg/katsuo.html", tags:["#フレンドリー","#ポージング","#シャープ","#鮮やかさ"]},
+    {name:"TSUBAI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/tsubai.html", tags:["#自然体","#いつものふたり","#笑顔","#安心感"]}
   ]
 },
 
@@ -97,10 +97,10 @@ C:{
   sub:"特別な一日を“作品”として残したいあなたへ",
   recommend:"世界観や演出を楽しみたい方へ。",
   photographers:[
-    {name:"TAIHEI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/taihei.html", tags:["#エモーショナル","#おしゃれ","#空気感","#しっとり"]},
     {name:"Naoya", url:"https://doc.la-viephoto.com/shop/tgoo/pg/naoya.html", tags:["#モード","#シック","#大人っぽい","#非日常"]},
     {name:"coge", url:"https://doc.la-viephoto.com/shop/tgoo/pg/coge.html", tags:["#大人っぽい","#しっとり","#美しさ","#フレンドリー"]},
-    {name:"kaneda", url:"https://doc.la-viephoto.com/shop/tgoo/pg/kaneda.html", tags:["#きれいめ","#ポージング","#繊細な光","#親しみやすさ"]}
+    {name:"kaneda", url:"https://doc.la-viephoto.com/shop/tgoo/pg/kaneda.html", tags:["#きれいめ","#ポージング","#繊細な光","#親しみやすさ"]},
+    {name:"TAIHEI", url:"https://doc.la-viephoto.com/shop/tgoo/pg/taihei.html", tags:["#エモーショナル","#おしゃれ","#空気感","#しっとり"]}
   ]
 },
 
@@ -118,7 +118,7 @@ D:{
 
 };
 
-/* ===== 以下は京都そのまま ===== */
+/* ===== 以下そのまま ===== */
 
 function showQuestion(text,aText,bText,onA,onB,showBack){
   card.classList.remove("hidden");
